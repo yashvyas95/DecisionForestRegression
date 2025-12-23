@@ -94,7 +94,6 @@ Results Display:
 - Model accuracy metrics (R-squared, MAE, tree count)
 
 ### UI Screenshot
-
 ![Decision Forest Regression UI](https://github.com/yashvyas95/DecisionForestRegression/blob/master/Docs/Decision_Forest_Regression_V2_Snapshot.png? raw=true)
 
 ## Usage Instructions
