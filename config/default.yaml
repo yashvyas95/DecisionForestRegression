@@ -1,0 +1,172 @@
+# Default configuration for Decision Forest Regression
+model:
+  # Forest configuration
+  n_trees: 100
+  max_depth: 10
+  min_samples_split: 5
+  min_samples_leaf: 2
+  max_features: "sqrt"
+  bootstrap: True
+  oob_score: True
+  
+  # Performance settings
+  n_jobs: -1
+  random_state: 42
+  verbose: 0
+
+# Training configuration
+training:
+  validation_split: 0.2
+  cross_validation:
+    enabled: True
+    cv_folds: 5
+    shuffle: True
+    stratify: False
+  
+  # Early stopping
+  early_stopping:
+    enabled: False
+    patience: 10
+    min_delta: 0.001
+  
+  # Feature preprocessing
+  preprocessing:
+    normalize: True
+    handle_missing: True
+    feature_selection: False
+    remove_outliers: False
+
+# Hyperparameter optimization
+optimization:
+  method: "grid_search"  # grid_search, random_search, bayesian
+  cv_folds: 3
+  n_iter: 50  # for random_search
+  scoring: "neg_mean_squared_error"
+  
+  param_grid:
+    n_trees: [50, 100, 200]
+    max_depth: [5, 10, 15, 20]
+    min_samples_split: [2, 5, 10]
+    min_samples_leaf: [1, 2, 4]
+
+# API configuration
+api:
+  host: "0.0.0.0"
+  port: 8000
+  workers: 4
+  reload: False
+  debug: False
+  
+  # CORS settings
+  cors:
+    allow_origins: ["*"]
+    allow_methods: ["GET", "POST", "PUT", "DELETE"]
+    allow_headers: ["*"]
+  
+  # Rate limiting
+  rate_limit:
+    requests_per_minute: 60
+    requests_per_hour: 1000
+
+# Logging configuration
+logging:
+  level: "INFO"
+  format: "json"
+  file: "logs/decision_forest.log"
+  max_size: "10MB"
+  backup_count: 5
+  
+  # Log different components
+  loggers:
+    decision_forest.core: "INFO"
+    decision_forest.api: "INFO"
+    decision_forest.optimization: "DEBUG"
+
+# Data configuration
+data:
+  # File paths
+  input_dir: "data/raw"
+  output_dir: "data/processed"
+  models_dir: "models"
+  
+  # Data validation
+  validation:
+    check_types: True
+    check_ranges: True
+    handle_inf: True
+    handle_nan: True
+  
+  # Sampling
+  sampling:
+    method: "bootstrap"
+    sample_size: null  # null means use all data
+    replacement: True
+
+# Model persistence
+persistence:
+  format: "joblib"  # joblib, pickle, onnx
+  compression: True
+  versioning: True
+  
+  # Model registry
+  registry:
+    enabled: False
+    backend: "local"  # local, s3, gcs
+    path: "models/registry"
+
+# Monitoring and metrics
+monitoring:
+  enabled: True
+  
+  # Metrics to track
+  metrics:
+    - "mse"
+    - "rmse"
+    - "mae"
+    - "r2_score"
+    - "training_time"
+    - "prediction_time"
+  
+  # Model drift detection
+  drift_detection:
+    enabled: False
+    threshold: 0.05
+    window_size: 1000
+
+# Visualization
+visualization:
+  backend: "matplotlib"  # matplotlib, plotly, seaborn
+  style: "default"
+  save_plots: True
+  plot_dir: "plots"
+  
+  # Plot settings
+  plots:
+    feature_importance: True
+    learning_curves: True
+    residual_plots: True
+    prediction_intervals: True
+
+# Performance and profiling
+performance:
+  profiling: False
+  memory_profiling: False
+  benchmark: False
+  
+  # Caching
+  caching:
+    enabled: True
+    backend: "memory"  # memory, redis, disk
+    ttl: 3600  # seconds
+
+# Security
+security:
+  authentication: False
+  api_key_required: False
+  https_only: False
+  
+  # Input validation
+  input_validation:
+    max_features: 1000
+    max_samples: 1000000
+    allowed_file_types: [".csv", ".json", ".parquet"]

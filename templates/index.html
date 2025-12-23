@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Housing Price Predictor</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-top: 30px;
+        }
+
+        @media (max-width: 968px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .card h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 1.8em;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 600;
+            font-size: 0.95em;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1em;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .form-group small {
+            display: block;
+            margin-top: 5px;
+            color: #666;
+            font-size: 0.85em;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin-top: 10px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .result-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            margin-top: 20px;
+            display: none;
+        }
+
+        .result-card.show {
+            display: block;
+            animation: slideIn 0.5s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .result-price {
+            font-size: 3em;
+            font-weight: bold;
+            margin: 20px 0;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .result-info {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .model-info {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 20px;
+        }
+
+        .model-info h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .model-card {
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            transition: border-color 0.3s, transform 0.2s;
+        }
+
+        .model-card:hover {
+            border-color: #667eea;
+            transform: translateY(-2px);
+        }
+
+        .model-card h4 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .model-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-label {
+            font-size: 0.8em;
+            color: #666;
+            display: block;
+        }
+
+        .stat-value {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            color: #667eea;
+            margin-top: 20px;
+        }
+
+        .loading.show {
+            display: block;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .example-btn {
+            background: #f0f0f0;
+            color: #333;
+            padding: 8px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 5px;
+            font-size: 0.9em;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: all 0.3s;
+        }
+
+        .example-btn:hover {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .tooltip {
+            position: relative;
+            display: inline-block;
+            cursor: help;
+            color: #667eea;
+            margin-left: 5px;
+        }
+
+        .tooltip:hover::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            bottom: 125%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #333;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 5px;
+            font-size: 0.85em;
+            white-space: nowrap;
+            z-index: 1000;
+        }
+
+        .alert {
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            display: none;
+        }
+
+        .alert.error {
+            background: #fee;
+            border: 2px solid #fcc;
+            color: #c33;
+        }
+
+        .alert.show {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🏠 Housing Price Predictor</h1>
+            <p>California Housing Dataset - Decision Forest Model</p>
+        </div>
+
+        <div class="main-content">
+            <div class="card">
+                <h2>📊 Property Details</h2>
+                
+                <form id="predictionForm">
+                    <div class="form-group">
+                        <label for="model">Select Model:</label>
+                        <select id="model" name="model">
+                            {% for model in models %}
+                            <option value="{{ model.name }}">
+                                {{ model.display_name }} 
+                                {% if model.r2_score %}(R²: {{ "%.2f"|format(model.r2_score * 100) }}%){% endif %}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="medinc">
+                                Median Income
+                                <span class="tooltip" data-tooltip="Median household income (in $10,000s)">ℹ️</span>
+                            </label>
+                            <input type="number" id="medinc" name="medinc" step="0.1" value="3.5" required>
+                            <small>In $10,000s (e.g., 3.5 = $35,000)</small>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="houseage">
+                                House Age
+                                <span class="tooltip" data-tooltip="Median age of houses in the block">ℹ️</span>
+                            </label>
+                            <input type="number" id="houseage" name="houseage" step="1" value="29" required>
+                            <small>Years</small>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="averrooms">
+                                Average Rooms
+                                <span class="tooltip" data-tooltip="Average number of rooms per household">ℹ️</span>
+                            </label>
+                            <input type="number" id="averrooms" name="averrooms" step="0.1" value="5.5" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="avebedrms">
+                                Average Bedrooms
+                                <span class="tooltip" data-tooltip="Average number of bedrooms per household">ℹ️</span>
+                            </label>
+                            <input type="number" id="avebedrms" name="avebedrms" step="0.1" value="1.0" required>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="population">
+                                Population
+                                <span class="tooltip" data-tooltip="Block population">ℹ️</span>
+                            </label>
+                            <input type="number" id="population" name="population" step="1" value="1000" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="aveoccup">
+                                Average Occupancy
+                                <span class="tooltip" data-tooltip="Average number of household members">ℹ️</span>
+                            </label>
+                            <input type="number" id="aveoccup" name="aveoccup" step="0.1" value="3.0" required>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="latitude">
+                                Latitude
+                                <span class="tooltip" data-tooltip="Block latitude">ℹ️</span>
+                            </label>
+                            <input type="number" id="latitude" name="latitude" step="0.01" value="37.85" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="longitude">
+                                Longitude
+                                <span class="tooltip" data-tooltip="Block longitude">ℹ️</span>
+                            </label>
+                            <input type="number" id="longitude" name="longitude" step="0.01" value="-122.25" required>
+                        </div>
+                    </div>
+
+                    <button type="button" class="example-btn" onclick="loadExample1()">
+                        📝 Load Example 1 (Average Home)
+                    </button>
+                    <button type="button" class="example-btn" onclick="loadExample2()">
+                        💎 Load Example 2 (Luxury Home)
+                    </button>
+
+                    <button type="submit" class="btn" id="predictBtn">
+                        🔮 Predict Price
+                    </button>
+                </form>
+
+                <div class="loading" id="loading">
+                    <div class="spinner"></div>
+                    <p>Making prediction...</p>
+                </div>
+
+                <div class="alert error" id="errorAlert"></div>
+            </div>
+
+            <div class="card">
+                <h2>💰 Prediction Result</h2>
+                
+                <div id="resultPlaceholder" style="text-align: center; padding: 50px; color: #999;">
+                    <p style="font-size: 1.2em;">Fill in the property details and click "Predict Price" to see the estimated value.</p>
+                </div>
+
+                <div class="result-card" id="resultCard">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
+                        <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 20px; border-radius: 10px; color: white;">
+                            <div style="font-size: 0.9em; opacity: 0.9; margin-bottom: 5px;">📊 1990 Price (Original)</div>
+                            <div id="predictedPrice1990" style="font-size: 2em; font-weight: bold;">$0</div>
+                            <div style="font-size: 0.8em; opacity: 0.8; margin-top: 5px;">Based on model training data</div>
+                        </div>
+                        <div style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); padding: 20px; border-radius: 10px; color: white;">
+                            <div style="font-size: 0.9em; opacity: 0.9; margin-bottom: 5px;">🏠 2025 Price (Adjusted)</div>
+                            <div id="predictedPrice2025" style="font-size: 2em; font-weight: bold;">$0</div>
+                            <div style="font-size: 0.8em; opacity: 0.8; margin-top: 5px;">Inflation + market adjusted</div>
+                        </div>
+                    </div>
+                    
+                    <div id="adjustmentBreakdown" style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
+                        <h4 style="margin: 0 0 10px 0; color: #333;">📈 Adjustment Breakdown</h4>
+                        <div style="display: grid; gap: 8px; font-size: 0.9em; color: #555;">
+                            <div style="display: flex; justify-content: space-between;">
+                                <span>Base Price (1990):</span>
+                                <span id="breakdown1990" style="font-weight: 600;">$0</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between;">
+                                <span>× Inflation Factor (2.2x):</span>
+                                <span id="breakdownInflation" style="font-weight: 600;">$0</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between;">
+                                <span>× CA Market Premium (1.5x):</span>
+                                <span id="breakdownMarket" style="font-weight: 600;">$0</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; padding-top: 8px; border-top: 2px solid #ddd; font-size: 1.05em;">
+                                <span><strong>2025 Estimated Price:</strong></span>
+                                <span id="breakdownTotal" style="font-weight: 700; color: #f5576c;">$0</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="result-info" id="resultInfo"></div>
+                    
+                    <div style="background: #fff3cd; padding: 12px; border-radius: 6px; border-left: 4px solid #ffc107; font-size: 0.85em; color: #856404; margin-top: 15px;">
+                        <strong>ℹ️ Note:</strong> Model trained on 1990 California census data. 2025 adjustment uses estimated inflation (2.2x) and California housing market premium (1.5x). Actual prices may vary by location and market conditions.
+                    </div>
+                </div>
+
+                <div class="model-info">
+                    <h3>📈 Available Models</h3>
+                    {% if models %}
+                        {% for model in models %}
+                        <div class="model-card">
+                            <h4>{{ model.display_name }}</h4>
+                            <div class="model-stats">
+                                <div class="stat">
+                                    <span class="stat-label">R² Score</span>
+                                    <span class="stat-value">{{ "%.1f"|format(model.r2_score * 100) if model.r2_score else 'N/A' }}%</span>
+                                </div>
+                                <div class="stat">
+                                    <span class="stat-label">MAE</span>
+                                    <span class="stat-value">${{ "{:,.0f}".format(model.mae) if model.mae else 'N/A' }}</span>
+                                </div>
+                                <div class="stat">
+                                    <span class="stat-label">Trees</span>
+                                    <span class="stat-value">{{ model.n_trees if model.n_trees else 'N/A' }}</span>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <p style="color: #999; text-align: center;">No models available</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const form = document.getElementById('predictionForm');
+        const loading = document.getElementById('loading');
+        const resultCard = document.getElementById('resultCard');
+        const resultPlaceholder = document.getElementById('resultPlaceholder');
+        const predictedPrice = document.getElementById('predictedPrice');
+        const resultInfo = document.getElementById('resultInfo');
+        const predictBtn = document.getElementById('predictBtn');
+        const errorAlert = document.getElementById('errorAlert');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            // Hide previous results and errors
+            resultCard.classList.remove('show');
+            resultPlaceholder.style.display = 'block';
+            errorAlert.classList.remove('show');
+            
+            // Show loading
+            loading.classList.add('show');
+            predictBtn.disabled = true;
+
+            // Get form data
+            const formData = {
+                model: document.getElementById('model').value,
+                medinc: document.getElementById('medinc').value,
+                houseage: document.getElementById('houseage').value,
+                averrooms: document.getElementById('averrooms').value,
+                avebedrms: document.getElementById('avebedrms').value,
+                population: document.getElementById('population').value,
+                aveoccup: document.getElementById('aveoccup').value,
+                latitude: document.getElementById('latitude').value,
+                longitude: document.getElementById('longitude').value
+            };
+
+            try {
+                const response = await fetch('/predict', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                const data = await response.json();
+
+                if (data.success && data.prediction !== undefined && data.prediction !== null) {
+                    // Show result
+                    const price1990 = parseFloat(data.prediction);
+                    const price2025 = parseFloat(data.prediction_2025);
+                    
+                    if (isNaN(price1990) || isNaN(price2025)) {
+                        throw new Error('Invalid prediction value received');
+                    }
+                    
+                    // Format prices
+                    const formatPrice = (price) => '$' + price.toLocaleString('en-US', {
+                        minimumFractionDigits: 0,
+                        maximumFractionDigits: 0
+                    });
+                    
+                    // Update 1990 and 2025 prices
+                    document.getElementById('predictedPrice1990').textContent = formatPrice(price1990);
+                    document.getElementById('predictedPrice2025').textContent = formatPrice(price2025);
+                    
+                    // Update breakdown
+                    const inflationAdjusted = price1990 * (data.adjustment_factors?.inflation_factor || 2.2);
+                    document.getElementById('breakdown1990').textContent = formatPrice(price1990);
+                    document.getElementById('breakdownInflation').textContent = formatPrice(inflationAdjusted);
+                    document.getElementById('breakdownMarket').textContent = formatPrice(price2025);
+                    document.getElementById('breakdownTotal').textContent = formatPrice(price2025);
+                    
+                    // Update model info
+                    const modelName = data.model ? data.model.replace(/_/g, ' ').toUpperCase() : 'Unknown';
+                    let modelInfoHTML = `<p style="font-weight: 600; margin-bottom: 15px; font-size: 1.05em; color: #333;">Model: ${modelName}</p>`;
+                    if (data.model_info) {
+                        const r2Score = data.model_info.r2_score ? (data.model_info.r2_score * 100).toFixed(1) : 'N/A';
+                        const mae = data.model_info.mae ? data.model_info.mae.toLocaleString('en-US', {maximumFractionDigits: 0}) : 'N/A';
+                        const trees = data.model_info.n_trees || 'N/A';
+                        modelInfoHTML += `
+                            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; padding: 15px; background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); border-radius: 8px; font-size: 0.95em;">
+                                <div style="text-align: center;">
+                                    <div style="color: #555; font-size: 0.85em; margin-bottom: 5px;">Accuracy (R²)</div>
+                                    <div style="font-size: 1.4em; font-weight: bold; color: #667eea;">${r2Score}%</div>
+                                </div>
+                                <div style="text-align: center;">
+                                    <div style="color: #555; font-size: 0.85em; margin-bottom: 5px;">Avg Error</div>
+                                    <div style="font-size: 1.4em; font-weight: bold; color: #f5576c;">$${mae}</div>
+                                </div>
+                                <div style="text-align: center;">
+                                    <div style="color: #555; font-size: 0.85em; margin-bottom: 5px;">Trees</div>
+                                    <div style="font-size: 1.4em; font-weight: bold; color: #4caf50;">${trees}</div>
+                                </div>
+                            </div>
+                        `;
+                    }
+                    
+                    resultInfo.innerHTML = modelInfoHTML;
+                    
+                    resultPlaceholder.style.display = 'none';
+                    resultCard.classList.add('show');
+                } else {
+                    throw new Error(data.error || 'Prediction failed - no data received');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                const errorMessage = error.message || 'An unexpected error occurred';
+                errorAlert.textContent = '❌ Error: ' + errorMessage;
+                errorAlert.classList.add('show');
+                
+                // Log detailed error for debugging
+                console.error('Full error details:', {
+                    message: error.message,
+                    stack: error.stack,
+                    error: error
+                });
+            } finally {
+                loading.classList.remove('show');
+                predictBtn.disabled = false;
+            }
+        });
+
+        function loadExample1() {
+            document.getElementById('medinc').value = '3.5';
+            document.getElementById('houseage').value = '29';
+            document.getElementById('averrooms').value = '5.5';
+            document.getElementById('avebedrms').value = '1.0';
+            document.getElementById('population').value = '1000';
+            document.getElementById('aveoccup').value = '3.0';
+            document.getElementById('latitude').value = '37.85';
+            document.getElementById('longitude').value = '-122.25';
+        }
+
+        function loadExample2() {
+            document.getElementById('medinc').value = '8.5';
+            document.getElementById('houseage').value = '15';
+            document.getElementById('averrooms').value = '8.0';
+            document.getElementById('avebedrms').value = '2.5';
+            document.getElementById('population').value = '500';
+            document.getElementById('aveoccup').value = '2.5';
+            document.getElementById('latitude').value = '37.77';
+            document.getElementById('longitude').value = '-122.42';
+        }
+    </script>
+</body>
+</html>
