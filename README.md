@@ -93,6 +93,10 @@ Results Display:
 - Step-by-step breakdown of price adjustments
 - Model accuracy metrics (R-squared, MAE, tree count)
 
+### UI Screenshot
+
+![Decision Forest Regression UI](/Docs/Decision_Forest_Regression_V2_Snapshot.png)
+
 ## Usage Instructions
 
 ### Web Interface
