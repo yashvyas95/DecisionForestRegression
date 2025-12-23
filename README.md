@@ -22,6 +22,9 @@ Core Capabilities:
 - Complete web application with Flask backend and JavaScript frontend
 - Production-ready deployment with Docker support
 
+### UI Screenshot
+![Decision Forest Regression UI](Docs/Decision_Forest_Regression_V2_Snapshot.png)
+
 ## Quick Start
 
 Installation and running the application:
@@ -92,9 +95,6 @@ Results Display:
 - 2025 adjusted price accounting for inflation
 - Step-by-step breakdown of price adjustments
 - Model accuracy metrics (R-squared, MAE, tree count)
-
-### UI Screenshot
-![Decision Forest Regression UI](https://github.com/yashvyas95/DecisionForestRegression/blob/master/Docs/Decision_Forest_Regression_V2_Snapshot.png? raw=true)
 
 ## Usage Instructions
 
