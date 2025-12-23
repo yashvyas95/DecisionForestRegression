@@ -403,7 +403,6 @@ MIT License - See LICENSE file for details
 **Yash Vyas**
 - GitHub: https://github.com/yashvyas
 - LinkedIn: https://linkedin.com/in/yashvyas
-- Email: yash.vyas@example.com
 
 ## Acknowledgments
 
