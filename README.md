@@ -43,60 +43,7 @@ python app.py
 
 # Open browser to http://127.0.0.1:5000
 ```
-
 Open in browser: http://127.0.0.1:5000
-
-```
-
-## Project Structure
-## Project Structure
-
-The repository is organized for clarity and maintainability:
-
-```
-Decision_Forest_Regression_V2/
-├── app.py                              # Flask application entry point
-├── requirements.txt                    # Python dependencies
-├── setup.py                            # Package setup configuration
-├── LICENSE                             # MIT License
-├── README.md                           # This file
-│
-├── src/
-│   └── decision_forest.py             # Core Decision Forest implementation
-│
-├── models/                             # Trained model files (19.18 MB)
-│   ├── housing_quick_model.joblib
-│   ├── housing_balanced_model.joblib  # Primary model (75.8% R²)
-│   ├── housing_enhanced_100tree_model.joblib
-│   ├── balanced_scaler.joblib
-│   ├── enhanced_scaler.joblib
-│   ├── balanced_model_metadata.json
-│   └── enhanced_model_metadata.json
-│
-├── templates/
-│   └── index.html                     # Web interface (HTML5 + CSS3 + JavaScript)
-│
-├── config/                             # Configuration files
-│   └── config.yaml                    # Application settings
-│
-├── data/                               # Dataset storage
-│   └── housing.csv
-│
-├── logs/                               # Application and training logs
-│
-├── tests/                              # Unit and integration tests
-│   ├── test_models.py
-│   └── test_enhanced_model.py
-│
-├── docs/                               # Documentation
-│
-├── scripts/
-│   └── train_models.py                # Model training orchestration
-│
-├── Dockerfile                          # Docker containerization
-├── docker-compose.yml                 # Docker Compose configuration
-│
-└── .gitignore                          # Git exclusions (cache, venv, logs)
 ```
 
 ## Model Performance
