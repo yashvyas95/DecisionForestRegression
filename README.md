@@ -95,7 +95,7 @@ Results Display:
 
 ### UI Screenshot
 
-![Decision Forest Regression UI](/Docs/Decision_Forest_Regression_V2_Snapshot.png)
+![Decision Forest Regression UI](Docs/Decision_Forest_Regression_V2_Snapshot.png)
 
 ## Usage Instructions
 
