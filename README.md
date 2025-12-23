@@ -404,8 +404,8 @@ MIT License - See LICENSE file for details
 ## Author
 
 **Yash Vyas**
-- GitHub: https://github.com/yashvyas
-- LinkedIn: https://linkedin.com/in/yashvyas
+- GitHub: https://github.com/yashvyas95
+- LinkedIn: https://linkedin.com/in/yashvyas0
 
 ## Acknowledgments
 
